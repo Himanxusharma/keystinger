@@ -1,61 +1,41 @@
-# Chrome Web Store Listing & Preparation — KeyStinger
+# KeyStinger — Chrome Web Store Submission & Publishing Guide
 
-**Last Updated:** August 2026  
-**Extension Name:** KeyStinger  
-**Version:** 1.0.0  
-**Target Category:** Developer Tools  
-
----
-
-## 1. Store Metadata & Copy
-
-### Short Description (max 132 chars)
-Instant multi-provider AI API key validator, live model discovery, request traffic inspector, and encrypted local key vault.
-
-### Detailed Store Description
-KeyStinger is a lightweight, privacy-first developer extension for validating AI provider API keys, discovering live accessible models, inspecting HTTP exchange traffic, and managing your credential health directly from your browser.
-
-**Core Capabilities:**
-- ⚡ **Instant Key Verification**: Paste any API key and get an accurate pass/fail validation in under 2 seconds. Auto-detects provider prefixes (`sk-`, `sk-ant-`, `nvapi-`, `AIza`, `gsk_`, `pplx-`, `sk-or-`).
-- 🤖 **Live Model Discovery**: Browses real entitled models returned by provider endpoints—not a static hardcoded list.
-- 💻 **Ready-to-Use Snippets**: Generates pre-filled, model-specific code snippets for cURL, JavaScript (Fetch), and Python.
-- 🌐 **Multi-Provider Support**: Supports OpenAI, Anthropic (Claude), Google Gemini, NVIDIA NIM, Mistral AI, Groq, xAI (Grok), Cohere, Perplexity, DeepSeek, Together AI, and OpenRouter out of the box.
-- ⚡ **Custom Providers via cURL**: Paste a cURL command from provider docs or DevTools to convert any self-hosted model or internal gateway into a validatable provider.
-- 🔍 **Traffic Inspector**: Inspect raw HTTP request headers, response status, and JSON payloads with automatic API key masking (`sk-••••1234`).
-- 🔒 **Client-Side Encrypted Vault**: Stores credentials locally in `chrome.storage.local` encrypted at rest with WebCrypto AES-GCM.
-- 🚀 **Zero Backend Guarantee**: Every validation call goes directly from your browser to official provider APIs using `fetch()`. No proxy server ever sees or stores your keys.
+**Extension Title**: KeyStinger — AI API Key Vault & Developer Toolbelt  
+**Short Description**: Privacy-first AI API key validator, live model discovery, traffic inspector, token counter, and developer toolbelt.  
+**License**: Open Source (MIT License)  
 
 ---
 
-## 2. Permissions Justification
+## 📄 Full Description for Chrome Web Store Listing
 
-| Permission / Host | Type | Plain-English Justification |
-|---|---|---|
-| `storage` | Permission | Required to store encrypted API keys and custom provider definitions locally via `chrome.storage.local`. |
-| `https://api.openai.com/*` | Host Permission | Required to validate OpenAI API keys and fetch model entitlements directly. |
-| `https://api.anthropic.com/*` | Host Permission | Required to validate Anthropic (Claude) API keys and fetch model entitlements directly. |
-| `https://generativelanguage.googleapis.com/*` | Host Permission | Required to validate Google Gemini API keys and fetch model entitlements directly. |
-| `https://integrate.api.nvidia.com/*` | Host Permission | Required to validate NVIDIA NIM API keys and fetch model entitlements directly. |
-| `optional_host_permissions` | Host Permission | Requested dynamically at runtime when the user selects a long-tail provider (Mistral, Groq, xAI, OpenRouter, etc.) or defines a custom cURL origin. |
+KeyStinger is an open-source, privacy-first developer toolbelt for managing, validating, and auditing AI API key credentials across 12+ top AI providers.
 
----
+### 🌟 Key Features
 
-## 3. Privacy & Data Handling Disclosures
-
-- **Data Collected**: None. KeyStinger does NOT collect, track, or transmit any user data, telemetry, or credentials to any third-party analytics or developer server.
-- **Data Storage**: API keys and custom headers are stored locally on the user's device encrypted at rest with WebCrypto AES-GCM.
-- **Network Calls**: Direct client-to-provider HTTPS `fetch()` requests only.
+1. **Instant Key Validation & Model Discovery**: Validate API keys for OpenAI, Anthropic (Claude), Google Gemini, NVIDIA NIM, Mistral, Groq, xAI (Grok), Cohere, Perplexity, DeepSeek, Together AI, and OpenRouter in 1 click.
+2. **Auto-Detect Key Prefixes**: Automatically detects `sk-proj-`, `sk-ant-`, `nvapi-`, `AIza`, `gsk_`, `pplx-`, and `sk-or-`.
+3. **AES-256 WebCrypto Encryption at Rest**: Encrypts all credentials locally in `chrome.storage.local`.
+4. **100% On-Device & Zero-Backend Guarantee**: Direct browser requests to official provider endpoints. Zero intermediate servers, zero tracking scripts, zero telemetry.
+5. **Test-Prompt Inference Sandbox**: Verify active inference quota and measure round-trip latency (ms).
+6. **Batch `.env` Importer**: Paste `.env` strings, batch-validate all keys, and save to vault in 1 click.
+7. **Free Tier & Limits Directory**: Built-in guide highlighting providers offering 100% free API keys (Gemini, Groq, NVIDIA, OpenRouter).
+8. **Developer Utilities**: Token counter & cost calculator, `.env` exporter, side-by-side model diffing, and multi-key load balancer code generators for Node.js and Python.
 
 ---
 
-## 4. How to Package for Store Submission
+## 🔒 Single-Purpose & Permissions Justification
 
-```bash
-# 1. Run full build & tests
-npm test
-npm run build
+| Permission | Purpose & Justification |
+|---|---|
+| `storage` | Required to persist user's WebCrypto AES-GCM encrypted API key vault locally in `chrome.storage.local`. |
+| `contextMenus` | Allows users to right-click highlighted API key text on any web page and select "Validate Key with KeyStinger". |
+| `alarms` | Registers a background alarm (`chrome.alarms`) for periodic health checks on saved credentials. |
+| `host_permissions` | Enables direct `fetch()` calls to official AI provider endpoints (`api.openai.com`, `api.anthropic.com`, `generativelanguage.googleapis.com`, `integrate.api.nvidia.com`). |
 
-# 2. Package dist directory into zip file
-cd dist
-zip -r ../keystinger-v1.0.0.zip .
-```
+---
+
+## 🔒 Privacy Policy Summary
+
+- **Data Collection**: KeyStinger collects ZERO user data, ZERO analytics, and ZERO telemetry.
+- **Data Storage**: All credentials and request logs remain 100% local on the user's device encrypted with WebCrypto AES-GCM 256-bit keys.
+- **Data Transmission**: KeyStinger communicates ONLY with the specific AI provider endpoints selected by the user. KeyStinger has no middleman cloud servers.

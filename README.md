@@ -1,61 +1,115 @@
-# KeyStinger — Multi-Provider API Key Validator (Chrome Extension)
+<div align="center">
 
-A lightweight Chrome extension that lets developers paste an AI provider API key, instantly verify it's live, and browse exactly which models that key can access — all without the key ever leaving the browser.
+  # ⚡ KeyStinger
 
-## Why this exists
+  **The Privacy-First, Multi-Provider AI API Key Vault & Developer Toolbelt Chrome Extension**
 
-Every AI provider ships its own dashboard, its own key format, and its own way of listing models. Developers juggling five or six provider keys (OpenAI, Anthropic, Gemini, NVIDIA NIM, Mistral, Groq...) have no single place to check "is this key still alive, and what can it do?" This extension is that single place.
+  [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+  [![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-amber.svg)](manifest.json)
+  [![React 18](https://img.shields.io/badge/React-18-blue.svg)](package.json)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](tsconfig.json)
+  [![Vitest](https://img.shields.io/badge/Tests-9%2F9%20Passing-emerald.svg)](src/__tests__/unit.test.ts)
+  [![Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device-brightgreen.svg)](#-security--privacy-guarantee)
 
-## Core capabilities
+  <p align="center">
+    Instant live key validation, model discovery, traffic inspection, token counting, batch <code>.env</code> import, and developer toolbelt for 12+ AI providers.
+  </p>
 
-- **Paste-and-validate**: enter a key, pick a provider (or let the extension auto-detect from the key's prefix), and get a pass/fail result in under a second.
-- **Live model discovery**: on a successful validation, the extension calls that provider's model-listing endpoint and shows exactly which models the key is entitled to use — not a static hardcoded list.
-- **Model picker**: once verified, the user selects a model from the *actual* returned list to use as a default elsewhere (e.g., in another one of your extensions/apps).
-- **Multi-provider, one UI**: OpenAI, Anthropic, Google Gemini, NVIDIA NIM, Mistral, Groq, xAI (Grok), Cohere, Perplexity, DeepSeek, Together AI, OpenRouter — see the full matrix in [TRD.md](./TRD.md#provider-integration-matrix).
-- **Custom providers via paste-a-curl**: got a self-hosted model, an internal gateway, or a provider not in the list? Paste a curl command from its docs or DevTools and the extension turns it into a reusable, validatable provider.
-- **Request/response inspector**: every call — built-in or custom — shows you the exact raw request and raw response, with the key masked by default. No black box.
-- **Custom request sender**: a free-form request builder for one-off checks against any URL, independent of the built-in validation flow — a lightweight Postman-in-your-popup.
-- **Local-only key storage**: keys are stored in `chrome.storage.local`, encrypted at rest, and every call is made directly from the browser to the destination — no proxy backend ever sees a raw key.
-- **Key health dashboard**: at a glance, see which of your saved keys are valid, expired, rate-limited, or revoked.
+</div>
 
-## Pricing
+---
 
-**Free. No Pro tier, no paywalled features, no account required.** Every feature above ships free for now — see [PRD.md](./PRD.md#7-monetization) for the reasoning.
+## ✨ Features
 
-## Who it's for
+- **🌐 12+ Built-in AI Providers & Adapters**: Supports OpenAI, Anthropic (Claude), Google Gemini, NVIDIA NIM, Mistral AI, Groq, xAI (Grok), Cohere, Perplexity, DeepSeek, Together AI, and OpenRouter.
+- **⚡ Longest Prefix Auto-Detection**: Typing a key (`sk-proj-`, `sk-ant-`, `nvapi-`, `AIza`, `gsk_`, `pplx-`, `sk-or-`) instantly selects the provider.
+- **🛡️ AES-256 WebCrypto Encryption at Rest**: Credentials saved to `chrome.storage.local` are encrypted with 256-bit WebCrypto AES-GCM algorithms.
+- **🔒 Zero-Backend Architecture**: 100% direct browser `fetch()` calls to official API endpoints. No middleman cloud proxy, no telemetry, no tracking.
+- **🧪 Test-Prompt Execution Sandbox**: Fire 1-sentence completion prompts directly inside the popup to verify live inference quota and measure real round-trip latency (ms).
+- **📄 Batch `.env` File Importer**: Paste an entire `.env` string; KeyStinger extracts recognized API keys, batch-validates them concurrently, and saves all live keys to your vault in 1 click.
+- **🎁 Free Tier & Limits Directory**: Built-in guide highlighting providers offering 100% free API key tiers (Google Gemini 1,500 RPD, Groq 14,400 RPD, NVIDIA 1,000 Free Credits, OpenRouter Free Models).
+- **🧮 Token Counter & Cost Estimator**: Estimate prompt token counts and calculate estimated API spend across top LLM model pricing tiers.
+- **🔄 Side-by-Side Model Diff**: Compare two models side-by-side: context window, input/output cost per 1M tokens, key format, and cURL endpoints.
+- **🔄 Multi-Key Load Balancer Generator**: Generates ready-to-copy round-robin and fallback key rotation code snippets for Node.js and Python.
+- **🔐 Key Rotation Age Tracker**: Displays key creation age (e.g. `12d old`) and highlights keys older than 60 days with a security reminder (`🔐 Rotation Due`).
+- **⚡ Rate-Limit Header Decoder**: Parses `x-ratelimit-*` and `anthropic-ratelimit-*` headers into plain language badges (`⚡ 42 reqs left • resets in 12s`).
 
-Indie devs, agencies, and internal tooling teams who manage multiple AI vendor keys across projects and want a fast, trustworthy sanity check before wiring a key into production code.
+---
 
-## Documents in this repo
+## 🔒 Security & Privacy Guarantee
 
-| Doc | Purpose |
-|---|---|
-| `README.md` | This file — product overview |
-| `PRD.md` | Product Requirements Document — problem, personas, scope, roadmap, monetization |
-| `TRD.md` | Technical Requirements Document — architecture, provider API matrix, security model, manifest, data flow |
+KeyStinger was built from the ground up to protect your API keys:
 
-## Quick start (planned dev workflow)
+1. **No External Servers**: KeyStinger has **zero cloud servers**. All API validation and request calls originate directly from your local browser to official provider endpoints.
+2. **Encrypted Storage**: Plaintext keys are never stored on disk. Encryption keys are generated via WebCrypto API.
+3. **Open Source Auditability**: 100% open-source code under the MIT License. Anyone can inspect the code to verify zero telemetry or data leaks.
+
+---
+
+## 🚀 Quickstart & Developer Setup
+
+### Prerequisites
+- Node.js 18+ and `npm`
+
+### Installation
 
 ```bash
-# clone / scaffold
-npm create vite@latest keystinger -- --template react-ts
+# Clone the repository
+git clone https://github.com/your-username/keystinger.git
 cd keystinger
+
+# Install dependencies
 npm install
 
-# dev build with hot reload against Chrome MV3
-npm run dev
+# Run unit tests
+npm test
 
-# load unpacked
-# chrome://extensions -> Developer mode -> Load unpacked -> /dist
+# Build for production
+npm run build
 ```
 
-## Tech stack (proposed)
+### Loading the Unpacked Extension in Chrome
 
-- Manifest V3, React + TypeScript, Vite (CRXJS plugin for MV3 HMR)
-- `chrome.storage.local` + WebCrypto (AES-GCM) for at-rest key encryption
-- No backend required for MVP — all provider calls are direct `fetch()` from the extension's service worker / popup
-- Tailwind CSS for a minimal, dense UI (popup constrained to ~400x600px)
+1. Open Google Chrome and navigate to `chrome://extensions`.
+2. Enable **Developer mode** toggle in the top-right corner.
+3. Click **Load unpacked**.
+4. Select the build output directory: `/path/to/keystinger/dist`.
+5. KeyStinger is ready for use!
 
-## License / Status
+---
 
-Pre-build — this repo currently contains planning docs (PRD + TRD) only.
+## 🛠️ Project Structure
+
+```
+keystinger/
+├── dist/                      # Production extension build output (MV3)
+├── manifest.json              # Extension Manifest V3 definition
+├── background.ts              # Service worker (Alarms & Context Menus)
+├── public/icons/              # Extension icons (16x16, 48x48, 128x128)
+├── src/
+│   ├── adapters/              # Provider adapters (OpenAI, Anthropic, Gemini...)
+│   ├── components/            # React UI components (Vault, Tools, Sandbox...)
+│   ├── types/                 # TypeScript interfaces and schemas
+│   ├── utils/                 # Crypto, Storage, cURL parser, Pricing, RateLimit
+│   └── __tests__/             # Vitest unit test suite
+├── LICENSE                    # MIT Open Source License
+└── package.json               # Package dependencies & scripts
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you'd like to add a new AI provider adapter, fix a bug, or enhance developer tooling:
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/amazing-adapter`).
+3. Commit your changes (`git commit -m 'Add support for MyAI Provider'`).
+4. Run tests to ensure 100% pass (`npm test && npm run build`).
+5. Push to the branch and open a Pull Request.
+
+---
+
+## 📜 License
+
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
