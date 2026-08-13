@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink, Zap } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink, Zap, Lock } from 'lucide-react';
 import { ProviderDefinition, CustomProvider, ValidationResult } from '../types';
 import { BUILTIN_PROVIDERS, autoDetectProviderId, validateKeyForProvider } from '../adapters/registry';
 import { maskApiKey, encryptKey } from '../utils/crypto';
@@ -110,6 +110,22 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
 
   return (
     <div className="space-y-4">
+      {/* Security & Privacy Trust Banner */}
+      <div className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3 flex items-center justify-between text-[11px] shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <Lock size={12} />
+          </div>
+          <div>
+            <span className="font-bold text-white block leading-tight">100% On-Device & AES-256 Encrypted</span>
+            <span className="text-[10px] text-slate-400">Zero cloud proxy • Direct browser fetch</span>
+          </div>
+        </div>
+        <span className="text-[9px] font-extrabold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-2 py-0.5 rounded-full shrink-0">
+          Local Storage
+        </span>
+      </div>
+
       {/* Provider Selector */}
       <div>
         <div className="flex items-center justify-between mb-1.5">

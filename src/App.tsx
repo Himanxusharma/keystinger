@@ -7,6 +7,7 @@ import { ExchangeInspector } from './components/ExchangeInspector';
 import { CustomRequestSender } from './components/CustomRequestSender';
 import { ToolsTab } from './components/ToolsTab';
 import { CustomProviderModal } from './components/CustomProviderModal';
+import { SecurityTrustModal } from './components/SecurityTrustModal';
 import { ValidationResult, CustomProvider, SavedKey } from './types';
 import { getSavedKeys, getCustomProviders } from './utils/storage';
 
@@ -20,6 +21,7 @@ export function App() {
   const [lastValidatedProviderId, setLastValidatedProviderId] = useState<string>('openai');
 
   const [isCustomModalOpen, setIsCustomModalOpen] = useState<boolean>(false);
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState<boolean>(false);
 
   const loadInitialData = async () => {
     const keys = await getSavedKeys();
@@ -45,6 +47,7 @@ export function App() {
         setActiveTab={setActiveTab}
         savedKeysCount={savedKeysCount}
         openCustomProviderModal={() => setIsCustomModalOpen(true)}
+        openSecurityModal={() => setIsSecurityModalOpen(true)}
       />
 
       <main className="flex-1 p-4 max-w-md mx-auto w-full space-y-4">
@@ -86,6 +89,11 @@ export function App() {
         isOpen={isCustomModalOpen}
         onClose={() => setIsCustomModalOpen(false)}
         onProviderSaved={loadInitialData}
+      />
+
+      <SecurityTrustModal
+        isOpen={isSecurityModalOpen}
+        onClose={() => setIsSecurityModalOpen(false)}
       />
     </div>
   );

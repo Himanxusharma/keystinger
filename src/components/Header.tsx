@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, ShieldCheck, Terminal, Send, PlusCircle, Wrench } from 'lucide-react';
+import { KeyRound, ShieldCheck, Terminal, Send, PlusCircle, Wrench, Lock } from 'lucide-react';
 
 export type ActiveTab = 'validate' | 'vault' | 'inspector' | 'sender' | 'tools';
 
@@ -8,13 +8,15 @@ interface HeaderProps {
   setActiveTab: (tab: ActiveTab) => void;
   savedKeysCount: number;
   openCustomProviderModal: () => void;
+  openSecurityModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   savedKeysCount,
-  openCustomProviderModal
+  openCustomProviderModal,
+  openSecurityModal
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3.5 py-3 shadow-xl">
@@ -32,7 +34,14 @@ export const Header: React.FC<HeaderProps> = ({
                 v1.0
               </span>
             </h1>
-            <p className="text-[10px] text-slate-400 font-medium mt-0.5">Multi-Provider Credential Vault</p>
+            <button
+              onClick={openSecurityModal}
+              className="text-[10px] text-emerald-400 font-semibold mt-0.5 hover:underline flex items-center gap-1"
+              title="Click to view local security & AES-256 WebCrypto guarantee"
+            >
+              <Lock size={10} className="text-emerald-400" />
+              <span>100% Local • AES-256 Encrypted</span>
+            </button>
           </div>
         </div>
 
