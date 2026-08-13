@@ -10,28 +10,32 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     displayName: 'OpenAI',
     baseUrl: 'https://api.openai.com',
     keyPrefixes: ['sk-proj-', 'sk-admin-', 'sk-'],
-    docUrl: 'https://platform.openai.com/api-keys'
+    docUrl: 'https://platform.openai.com/api-keys',
+    statusPageUrl: 'https://status.openai.com'
   },
   {
     id: 'anthropic',
     displayName: 'Anthropic (Claude)',
     baseUrl: 'https://api.anthropic.com',
     keyPrefixes: ['sk-ant-'],
-    docUrl: 'https://console.anthropic.com/settings/keys'
+    docUrl: 'https://console.anthropic.com/settings/keys',
+    statusPageUrl: 'https://status.anthropic.com'
   },
   {
     id: 'gemini',
     displayName: 'Google Gemini',
     baseUrl: 'https://generativelanguage.googleapis.com',
     keyPrefixes: ['AIza'],
-    docUrl: 'https://aistudio.google.com/app/apikey'
+    docUrl: 'https://aistudio.google.com/app/apikey',
+    statusPageUrl: 'https://status.cloud.google.com'
   },
   {
     id: 'nvidia',
     displayName: 'NVIDIA NIM',
     baseUrl: 'https://integrate.api.nvidia.com',
     keyPrefixes: ['nvapi-'],
-    docUrl: 'https://build.nvidia.com'
+    docUrl: 'https://build.nvidia.com',
+    statusPageUrl: 'https://status.nvidia.com'
   },
   {
     id: 'mistral',
@@ -39,6 +43,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.mistral.ai',
     keyPrefixes: [],
     docUrl: 'https://console.mistral.ai/api-keys/',
+    statusPageUrl: 'https://status.mistral.ai',
     requiresOptionalPermission: true
   },
   {
@@ -47,6 +52,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.groq.com/openai',
     keyPrefixes: ['gsk_'],
     docUrl: 'https://console.groq.com/keys',
+    statusPageUrl: 'https://status.groq.com',
     requiresOptionalPermission: true
   },
   {
@@ -55,6 +61,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.x.ai',
     keyPrefixes: ['xai-'],
     docUrl: 'https://console.x.ai',
+    statusPageUrl: 'https://status.x.ai',
     requiresOptionalPermission: true
   },
   {
@@ -63,6 +70,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.cohere.com',
     keyPrefixes: [],
     docUrl: 'https://dashboard.cohere.com/api-keys',
+    statusPageUrl: 'https://status.cohere.com',
     requiresOptionalPermission: true
   },
   {
@@ -71,6 +79,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.perplexity.ai',
     keyPrefixes: ['pplx-'],
     docUrl: 'https://www.perplexity.ai/settings/api',
+    statusPageUrl: 'https://status.perplexity.ai',
     requiresOptionalPermission: true
   },
   {
@@ -79,6 +88,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.deepseek.com',
     keyPrefixes: [],
     docUrl: 'https://platform.deepseek.com/api_keys',
+    statusPageUrl: 'https://status.deepseek.com',
     requiresOptionalPermission: true
   },
   {
@@ -87,6 +97,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://api.together.xyz',
     keyPrefixes: [],
     docUrl: 'https://api.together.ai/settings/api-keys',
+    statusPageUrl: 'https://status.together.ai',
     requiresOptionalPermission: true
   },
   {
@@ -95,6 +106,7 @@ export const BUILTIN_PROVIDERS: ProviderDefinition[] = [
     baseUrl: 'https://openrouter.ai/api',
     keyPrefixes: ['sk-or-'],
     docUrl: 'https://openrouter.ai/keys',
+    statusPageUrl: 'https://status.openrouter.ai',
     requiresOptionalPermission: true
   }
 ];

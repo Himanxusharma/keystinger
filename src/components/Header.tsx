@@ -1,7 +1,7 @@
 import React from 'react';
-import { KeyRound, ShieldCheck, Terminal, Send, PlusCircle } from 'lucide-react';
+import { KeyRound, ShieldCheck, Terminal, Send, PlusCircle, Wrench } from 'lucide-react';
 
-export type ActiveTab = 'validate' | 'vault' | 'inspector' | 'sender';
+export type ActiveTab = 'validate' | 'vault' | 'inspector' | 'sender' | 'tools';
 
 interface HeaderProps {
   activeTab: ActiveTab;
@@ -49,29 +49,29 @@ export const Header: React.FC<HeaderProps> = ({
       <nav className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-lg border border-slate-800/80">
         <button
           onClick={() => setActiveTab('validate')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-semibold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-semibold transition-all ${
             activeTab === 'validate'
               ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
           }`}
         >
-          <KeyRound size={14} />
+          <KeyRound size={13} />
           <span>Validate</span>
         </button>
 
         <button
           onClick={() => setActiveTab('vault')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-semibold transition-all relative ${
+          className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-semibold transition-all relative ${
             activeTab === 'vault'
               ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
           }`}
         >
-          <ShieldCheck size={14} />
+          <ShieldCheck size={13} />
           <span>Vault</span>
           {savedKeysCount > 0 && (
             <span
-              className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold leading-none ${
+              className={`text-[9px] px-1 py-0.2 rounded-full font-bold leading-none ${
                 activeTab === 'vault' ? 'bg-slate-950 text-amber-400' : 'bg-slate-800 text-amber-300 border border-slate-700'
               }`}
             >
@@ -82,26 +82,38 @@ export const Header: React.FC<HeaderProps> = ({
 
         <button
           onClick={() => setActiveTab('inspector')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-semibold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-semibold transition-all ${
             activeTab === 'inspector'
               ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
           }`}
         >
-          <Terminal size={14} />
+          <Terminal size={13} />
           <span>Traffic</span>
         </button>
 
         <button
           onClick={() => setActiveTab('sender')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-semibold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-semibold transition-all ${
             activeTab === 'sender'
               ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
           }`}
         >
-          <Send size={14} />
+          <Send size={13} />
           <span>Request</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('tools')}
+          className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md text-[11px] font-semibold transition-all ${
+            activeTab === 'tools'
+              ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+          }`}
+        >
+          <Wrench size={13} />
+          <span>Tools</span>
         </button>
       </nav>
     </header>

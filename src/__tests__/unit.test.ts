@@ -3,8 +3,9 @@ import { autoDetectProviderId } from '../adapters/registry';
 import { maskApiKey } from '../utils/crypto';
 import { parseCurlCommand } from '../utils/curlParser';
 import { exportVaultData, importVaultData, getSavedKeys, saveKey, getRequestTemplates, saveRequestTemplate } from '../utils/storage';
+import { estimateTokenCount, calculateEstimatedCost } from '../utils/pricing';
 
-describe('KeyStinger Core Utilities (Phase 1 & Phase 2)', () => {
+describe('KeyStinger Core Utilities (Phase 1, 2 & 3)', () => {
   it('correctly auto-detects provider IDs from API key prefixes', () => {
     expect(autoDetectProviderId('sk-proj-1234567890abcdef')).toBe('openai');
     expect(autoDetectProviderId('sk-ant-api03-abcdef')).toBe('anthropic');
@@ -79,5 +80,16 @@ describe('KeyStinger Core Utilities (Phase 1 & Phase 2)', () => {
     const importedTmpl = tmpls.find(t => t.id === 'test_tmpl_1');
     expect(importedTmpl).toBeDefined();
     expect(importedTmpl?.name).toBe('Imported Template');
+  });
+
+  it('estimates token counts and API spend correctly', () => {
+    const sampleText = "The quick brown fox jumps over the lazy dog. ".repeat(20);
+    const tokens = estimateTokenCount(sampleText);
+    expect(tokens).toBeGreaterThan(100);
+
+    const cost = calculateEstimatedCost('gpt-4o', tokens, 500);
+    expect(cost.inputCost).toBeGreaterThan(0);
+    expect(cost.outputCost).toBeGreaterThan(0);
+    expect(cost.totalCost).toBe(cost.inputCost + cost.outputCost);
   });
 });

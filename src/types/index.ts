@@ -42,6 +42,7 @@ export interface ProviderDefinition {
   baseUrl: string;
   keyPrefixes: string[];
   docUrl?: string;
+  statusPageUrl?: string;
   isCustom?: boolean;
   authHeaderName?: string;
   requiresOptionalPermission?: boolean;

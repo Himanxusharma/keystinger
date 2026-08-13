@@ -16,7 +16,7 @@
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "contextMenus", "alarms"],
   "host_permissions": [
     "https://api.openai.com/*",
     "https://api.anthropic.com/*",

@@ -5,6 +5,7 @@ import { ModelPicker } from './components/ModelPicker';
 import { SavedVault } from './components/SavedVault';
 import { ExchangeInspector } from './components/ExchangeInspector';
 import { CustomRequestSender } from './components/CustomRequestSender';
+import { ToolsTab } from './components/ToolsTab';
 import { CustomProviderModal } from './components/CustomProviderModal';
 import { ValidationResult, CustomProvider } from './types';
 import { getSavedKeys, getCustomProviders } from './utils/storage';
@@ -72,6 +73,8 @@ export function App() {
         {activeTab === 'inspector' && <ExchangeInspector />}
 
         {activeTab === 'sender' && <CustomRequestSender />}
+
+        {activeTab === 'tools' && <ToolsTab customProviders={customProviders} />}
       </main>
 
       <CustomProviderModal
