@@ -22,10 +22,8 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3.5 py-3 shadow-xl">
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 p-[1.5px] shadow-lg shadow-amber-500/20 flex items-center justify-center">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <span className="text-amber-400 font-black text-xs tracking-tighter">KS</span>
-            </div>
+          <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <div className="w-2.5 h-2.5 bg-slate-950 rounded-full"></div>
           </div>
           <div>
             <h1 className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5 leading-none">
