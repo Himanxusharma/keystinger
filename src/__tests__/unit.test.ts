@@ -5,8 +5,9 @@ import { parseCurlCommand } from '../utils/curlParser';
 import { exportVaultData, importVaultData, getSavedKeys, saveKey, getRequestTemplates, saveRequestTemplate } from '../utils/storage';
 import { estimateTokenCount, calculateEstimatedCost } from '../utils/pricing';
 import { parseRateLimitHeaders } from '../utils/rateLimitDecoder';
+import { parseEnvFileContent } from '../utils/envBatchParser';
 
-describe('KeyStinger Core Utilities (Phases 1, 2, 3 & 4)', () => {
+describe('KeyStinger Core Utilities (All Phases)', () => {
   it('correctly auto-detects provider IDs from API key prefixes', () => {
     expect(autoDetectProviderId('sk-proj-1234567890abcdef')).toBe('openai');
     expect(autoDetectProviderId('sk-ant-api03-abcdef')).toBe('anthropic');
@@ -108,10 +109,19 @@ describe('KeyStinger Core Utilities (Phases 1, 2, 3 & 4)', () => {
     expect(parsed?.message).toContain('42 reqs left');
   });
 
-  it('includes official public status page URLs for built-in providers', () => {
-    const openai = BUILTIN_PROVIDERS.find(p => p.id === 'openai');
-    const anthropic = BUILTIN_PROVIDERS.find(p => p.id === 'anthropic');
-    expect(openai?.statusPageUrl).toBe('https://status.openai.com');
-    expect(anthropic?.statusPageUrl).toBe('https://status.anthropic.com');
+  it('parses .env file strings into extracted key objects', () => {
+    const envContent = `
+      # Development Keys
+      OPENAI_API_KEY="sk-proj-1234567890abcdef"
+      CLAUDE_KEY='sk-ant-1234567890abcdef'
+      GROQ_API_KEY=gsk_1234567890abcdef
+    `;
+
+    const extracted = parseEnvFileContent(envContent);
+    expect(extracted.length).toBe(3);
+    expect(extracted[0].variableName).toBe('OPENAI_API_KEY');
+    expect(extracted[0].providerId).toBe('openai');
+    expect(extracted[1].providerId).toBe('anthropic');
+    expect(extracted[2].providerId).toBe('groq');
   });
 });

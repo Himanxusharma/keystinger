@@ -74,7 +74,9 @@ export function App() {
 
         {activeTab === 'sender' && <CustomRequestSender />}
 
-        {activeTab === 'tools' && <ToolsTab customProviders={customProviders} />}
+        {activeTab === 'tools' && (
+          <ToolsTab customProviders={customProviders} onKeysChanged={loadInitialData} />
+        )}
       </main>
 
       <CustomProviderModal

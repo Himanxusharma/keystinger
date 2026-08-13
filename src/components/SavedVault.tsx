@@ -293,7 +293,24 @@ export const SavedVault: React.FC<SavedVaultProps> = ({ customProviders, onKeysC
                         {providerName}
                       </span>
                     </h4>
-                    <p className="text-[11px] font-mono text-slate-400 mt-0.5">{k.maskedKey}</p>
+                    <p className="text-[11px] font-mono text-slate-400 mt-0.5 flex items-center gap-2">
+                      <span>{k.maskedKey}</span>
+                      {(() => {
+                        const ageDays = Math.floor((Date.now() - (k.createdAt || Date.now())) / (1000 * 60 * 60 * 24));
+                        const isOld = ageDays >= 60;
+                        return (
+                          <span
+                            className={`text-[9px] font-sans font-semibold px-1.5 py-0.2 rounded border ${
+                              isOld
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                                : 'bg-slate-800 text-slate-400 border-slate-700'
+                            }`}
+                          >
+                            {isOld ? `🔐 Rotation Due (${ageDays}d)` : `${ageDays}d old`}
+                          </span>
+                        );
+                      })()}
+                    </p>
                   </div>
 
                   <span

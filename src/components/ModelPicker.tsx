@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Code2, Copy, Check, Sparkles, Layers } from 'lucide-react';
 import { ModelInfo } from '../types';
+import { TestPromptSandbox } from './TestPromptSandbox';
 
 interface ModelPickerProps {
   models: ModelInfo[];
@@ -321,6 +322,13 @@ print(response.choices[0].message.content)`;
           </button>
         </div>
       </div>
+
+      {/* Live Inference Sandbox */}
+      <TestPromptSandbox
+        providerId={providerId}
+        modelId={activeModel.id}
+        apiKey={apiKey}
+      />
     </div>
   );
 };
