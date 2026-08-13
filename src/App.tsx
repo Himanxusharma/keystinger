@@ -8,6 +8,7 @@ import { CustomRequestSender } from './components/CustomRequestSender';
 import { ToolsTab } from './components/ToolsTab';
 import { CustomProviderModal } from './components/CustomProviderModal';
 import { SecurityTrustModal } from './components/SecurityTrustModal';
+import { FreeTierGuideModal } from './components/FreeTierGuideModal';
 import { ValidationResult, CustomProvider, SavedKey } from './types';
 import { getSavedKeys, getCustomProviders } from './utils/storage';
 
@@ -22,6 +23,7 @@ export function App() {
 
   const [isCustomModalOpen, setIsCustomModalOpen] = useState<boolean>(false);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState<boolean>(false);
+  const [isFreeTierGuideOpen, setIsFreeTierGuideOpen] = useState<boolean>(false);
 
   const loadInitialData = async () => {
     const keys = await getSavedKeys();
@@ -57,6 +59,7 @@ export function App() {
               customProviders={customProviders}
               onValidationComplete={handleValidationComplete}
               onKeySaved={loadInitialData}
+              onOpenFreeTierGuide={() => setIsFreeTierGuideOpen(true)}
             />
 
             {lastValidationResult?.valid && (
@@ -94,6 +97,11 @@ export function App() {
       <SecurityTrustModal
         isOpen={isSecurityModalOpen}
         onClose={() => setIsSecurityModalOpen(false)}
+      />
+
+      <FreeTierGuideModal
+        isOpen={isFreeTierGuideOpen}
+        onClose={() => setIsFreeTierGuideOpen(false)}
       />
     </div>
   );

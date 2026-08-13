@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink, Zap, Lock } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink, Zap, Lock, Gift } from 'lucide-react';
 import { ProviderDefinition, CustomProvider, ValidationResult } from '../types';
 import { BUILTIN_PROVIDERS, autoDetectProviderId, validateKeyForProvider } from '../adapters/registry';
 import { maskApiKey, encryptKey } from '../utils/crypto';
@@ -10,12 +10,14 @@ interface ValidateFormProps {
   customProviders: CustomProvider[];
   onValidationComplete: (result: ValidationResult, providerId: string) => void;
   onKeySaved: () => void;
+  onOpenFreeTierGuide?: () => void;
 }
 
 export const ValidateForm: React.FC<ValidateFormProps> = ({
   customProviders,
   onValidationComplete,
-  onKeySaved
+  onKeySaved,
+  onOpenFreeTierGuide
 }) => {
   const [selectedProviderId, setSelectedProviderId] = useState<string>('openai');
   const [apiKey, setApiKey] = useState<string>('');
@@ -130,16 +132,27 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs font-semibold text-slate-300">Target AI Provider</label>
-          {currentProvider.docUrl && (
-            <a
-              href={currentProvider.docUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[11px] font-medium text-amber-400 hover:text-amber-300 flex items-center gap-1"
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onOpenFreeTierGuide}
+              className="text-[10px] font-bold text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full flex items-center gap-1 transition-all"
+              title="View free API keys, daily limits & trial credit directory"
             >
-              Get Key <ExternalLink size={10} />
-            </a>
-          )}
+              <Gift size={11} />
+              <span>Free Keys & Limits</span>
+            </button>
+            {currentProvider.docUrl && (
+              <a
+                href={currentProvider.docUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] font-medium text-amber-400 hover:text-amber-300 flex items-center gap-1"
+              >
+                Get Key <ExternalLink size={10} />
+              </a>
+            )}
+          </div>
         </div>
         <select
           value={selectedProviderId}
