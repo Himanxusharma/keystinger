@@ -55,7 +55,7 @@ KeyStinger was built from the ground up to protect your API keys:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/keystinger.git
+git clone https://github.com/Himanxusharma/keystinger.git
 cd keystinger
 
 # Install dependencies

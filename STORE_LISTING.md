@@ -16,7 +16,7 @@ Use this document to quickly fill in all required fields when submitting KeyStin
 `Developer Tools`
 
 ### Official Website / Privacy Policy URL
-`https://your-domain.com/privacy.html` *(or link to public GitHub Pages `privacy.html`)*
+`https://himanxusharma.github.io/keystinger/privacy.html` *(or link to your GitHub Pages `privacy.html`)*
 
 ---
 

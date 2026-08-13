@@ -61,5 +61,5 @@ KeyStinger is 100% open source under the **MIT License**. The codebase can be au
 ## 6. Contact & Data Controller Information
 
 If you have questions regarding this Privacy Policy or KeyStinger's security model, please contact:
-- **GitHub Repository**: [https://github.com/your-username/keystinger](https://github.com/your-username/keystinger)
-- **Open Source Issue Tracker**: [https://github.com/your-username/keystinger/issues](https://github.com/your-username/keystinger/issues)
+- **GitHub Repository**: [https://github.com/Himanxusharma/keystinger](https://github.com/Himanxusharma/keystinger)
+- **Open Source Issue Tracker**: [https://github.com/Himanxusharma/keystinger/issues](https://github.com/Himanxusharma/keystinger/issues)
