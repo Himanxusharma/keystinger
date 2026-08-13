@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
                 MV3
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium">Multi-Provider AI Key Vault</p>
+            <p className="text-[11px] text-slate-400 font-medium">Multi-Provider Credential Vault</p>
           </div>
         </div>
 

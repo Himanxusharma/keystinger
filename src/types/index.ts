@@ -82,3 +82,21 @@ export interface CustomRequestState {
   headers: HeaderRow[];
   body: string;
 }
+
+export interface RequestTemplate {
+  id: string;
+  name: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  url: string;
+  headers: HeaderRow[];
+  body: string;
+  createdAt: number;
+}
+
+export interface VaultBackupExport {
+  version: string;
+  exportedAt: number;
+  savedKeys: SavedKey[];
+  customProviders: CustomProvider[];
+  requestTemplates: RequestTemplate[];
+}

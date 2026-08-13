@@ -1,8 +1,57 @@
-import React, { useState } from 'react';
-import { Send, Plus, Trash2, ShieldAlert, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { CustomRequestState, HeaderRow, CapturedExchange } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Send, Plus, Trash2, Loader2, CheckCircle2, AlertTriangle, BookmarkPlus, FolderOpen } from 'lucide-react';
+import { CustomRequestState, HeaderRow, CapturedExchange, RequestTemplate } from '../types';
 import { ensureHostPermission } from '../adapters/registry';
-import { logExchange } from '../utils/storage';
+import { logExchange, getRequestTemplates, saveRequestTemplate, deleteRequestTemplate } from '../utils/storage';
+
+const BUILTIN_TEMPLATES: RequestTemplate[] = [
+  {
+    id: 'tmpl_openai_chat',
+    name: 'OpenAI — Chat Completion',
+    method: 'POST',
+    url: 'https://api.openai.com/v1/chat/completions',
+    headers: [
+      { key: 'Authorization', value: 'Bearer sk-...' },
+      { key: 'Content-Type', value: 'application/json' }
+    ],
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: 'Hello OpenAI' }]
+    }, null, 2),
+    createdAt: Date.now()
+  },
+  {
+    id: 'tmpl_claude_msg',
+    name: 'Anthropic — Messages API',
+    method: 'POST',
+    url: 'https://api.anthropic.com/v1/messages',
+    headers: [
+      { key: 'x-api-key', value: 'sk-ant-...' },
+      { key: 'anthropic-version', value: '2023-06-01' },
+      { key: 'Content-Type', value: 'application/json' }
+    ],
+    body: JSON.stringify({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: 'Hello Claude' }]
+    }, null, 2),
+    createdAt: Date.now()
+  },
+  {
+    id: 'tmpl_gemini_content',
+    name: 'Gemini — Generate Content',
+    method: 'POST',
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent',
+    headers: [
+      { key: 'x-goog-api-key', value: 'AIza...' },
+      { key: 'Content-Type', value: 'application/json' }
+    ],
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: 'Hello Gemini' }] }]
+    }, null, 2),
+    createdAt: Date.now()
+  }
+];
 
 export const CustomRequestSender: React.FC = () => {
   const [reqState, setReqState] = useState<CustomRequestState>({
@@ -18,6 +67,59 @@ export const CustomRequestSender: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastExchange, setLastExchange] = useState<CapturedExchange | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const [savedTemplates, setSavedTemplates] = useState<RequestTemplate[]>([]);
+  const [templateName, setTemplateName] = useState<string>('');
+  const [showSaveTemplate, setShowSaveTemplate] = useState<boolean>(false);
+
+  const loadTemplates = async () => {
+    const customTmpls = await getRequestTemplates();
+    setSavedTemplates(customTmpls);
+  };
+
+  useEffect(() => {
+    loadTemplates();
+  }, []);
+
+  const allTemplates = [...BUILTIN_TEMPLATES, ...savedTemplates];
+
+  const handleSelectTemplate = (templateId: string) => {
+    if (!templateId) return;
+    const found = allTemplates.find((t) => t.id === templateId);
+    if (found) {
+      setReqState({
+        method: found.method,
+        url: found.url,
+        headers: [...found.headers],
+        body: found.body || ''
+      });
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!templateName.trim() || !reqState.url.trim()) return;
+
+    const newTmpl: RequestTemplate = {
+      id: `tmpl_custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      name: templateName.trim(),
+      method: reqState.method,
+      url: reqState.url,
+      headers: reqState.headers,
+      body: reqState.body,
+      createdAt: Date.now()
+    };
+
+    await saveRequestTemplate(newTmpl);
+    await loadTemplates();
+    setTemplateName('');
+    setShowSaveTemplate(false);
+  };
+
+  const handleDeleteCustomTemplate = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await deleteRequestTemplate(id);
+    await loadTemplates();
+  };
 
   const addHeaderRow = () => {
     setReqState((prev) => ({
@@ -116,13 +218,72 @@ export const CustomRequestSender: React.FC = () => {
         <div className="flex items-center gap-2">
           <Send className="text-amber-400" size={18} />
           <h2 className="text-xs font-bold uppercase tracking-wider text-white">
-            Custom Request Sender
+            Custom Request Sandbox
           </h2>
         </div>
-        <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded font-mono">
-          Ad-hoc Sandbox
-        </span>
+        <button
+          onClick={() => setShowSaveTemplate(!showSaveTemplate)}
+          className="text-[10px] font-semibold text-amber-300 hover:text-amber-200 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded flex items-center gap-1"
+        >
+          <BookmarkPlus size={11} className="text-amber-400" /> Save Template
+        </button>
       </div>
+
+      {/* Template Preset Loader */}
+      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 space-y-2">
+        <div className="flex items-center gap-1.5 text-xs text-slate-300 font-semibold">
+          <FolderOpen size={14} className="text-amber-400" />
+          <span>Load Request Template</span>
+        </div>
+        <select
+          onChange={(e) => handleSelectTemplate(e.target.value)}
+          defaultValue=""
+          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500 font-medium"
+        >
+          <option value="" disabled>
+            Select a template to auto-fill...
+          </option>
+          <optgroup label="Built-in Presets">
+            {BUILTIN_TEMPLATES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </optgroup>
+          {savedTemplates.length > 0 && (
+            <optgroup label="My Saved Templates">
+              {savedTemplates.map((st) => (
+                <option key={st.id} value={st.id}>
+                  {st.name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+        </select>
+      </div>
+
+      {/* Save Template Inline Form */}
+      {showSaveTemplate && (
+        <div className="p-3 bg-amber-950/20 border border-amber-500/30 rounded-xl space-y-2">
+          <label className="text-[11px] font-semibold text-amber-300 block">Save Current Request as Template</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              placeholder="Template Name (e.g. Ollama Local Endpoint)"
+              className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            />
+            <button
+              onClick={handleSaveTemplate}
+              disabled={!templateName.trim()}
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-all disabled:opacity-50"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* URL & Method Row */}
       <div className="flex items-center gap-2">

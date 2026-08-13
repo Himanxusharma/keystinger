@@ -8,10 +8,12 @@ interface ModelPickerProps {
   apiKey?: string;
 }
 
+type SnippetLang = 'curl' | 'js_fetch' | 'node_sdk' | 'py_requests' | 'py_sdk';
+
 export const ModelPicker: React.FC<ModelPickerProps> = ({ models, providerId, apiKey = 'sk-...' }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedModelId, setSelectedModelId] = useState<string>(models[0]?.id || '');
-  const [snippetLanguage, setSnippetLanguage] = useState<'curl' | 'javascript' | 'python'>('curl');
+  const [snippetLanguage, setSnippetLanguage] = useState<SnippetLang>('curl');
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   if (!models || models.length === 0) return null;
@@ -25,6 +27,8 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({ models, providerId, ap
 
   const generateSnippet = (): string => {
     const targetModel = activeModel.id;
+
+    // 1. cURL
     if (snippetLanguage === 'curl') {
       if (providerId === 'anthropic') {
         return `curl https://api.anthropic.com/v1/messages \\
@@ -54,7 +58,25 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({ models, providerId, ap
   }'`;
     }
 
-    if (snippetLanguage === 'javascript') {
+    // 2. JavaScript (Fetch)
+    if (snippetLanguage === 'js_fetch') {
+      if (providerId === 'anthropic') {
+        return `const response = await fetch('https://api.anthropic.com/v1/messages', {
+  method: 'POST',
+  headers: {
+    'x-api-key': '${apiKey}',
+    'anthropic-version': '2023-06-01',
+    'content-type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: '${targetModel}',
+    max_tokens: 1024,
+    messages: [{ role: 'user', content: 'Hello Claude' }]
+  })
+});
+const data = await response.json();
+console.log(data);`;
+      }
       return `const response = await fetch('https://api.openai.com/v1/chat/completions', {
   method: 'POST',
   headers: {
@@ -70,7 +92,40 @@ const data = await response.json();
 console.log(data);`;
     }
 
-    return `import requests
+    // 3. Node.js (Official SDK)
+    if (snippetLanguage === 'node_sdk') {
+      if (providerId === 'anthropic') {
+        return `import Anthropic from '@anthropic-ai/sdk';
+
+const anthropic = new Anthropic({ apiKey: '${apiKey}' });
+const message = await anthropic.messages.create({
+  model: '${targetModel}',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'Hello Claude' }],
+});
+console.log(message.content);`;
+      }
+      if (providerId === 'gemini') {
+        return `import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI('${apiKey}');
+const model = genAI.getGenerativeModel({ model: '${targetModel}' });
+const result = await model.generateContent("Hello Gemini");
+console.log(result.response.text());`;
+      }
+      return `import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: '${apiKey}' });
+const response = await openai.chat.completions.create({
+  model: '${targetModel}',
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+console.log(response.choices[0].message);`;
+    }
+
+    // 4. Python (Requests)
+    if (snippetLanguage === 'py_requests') {
+      return `import requests
 
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
@@ -84,6 +139,38 @@ payload = {
 
 response = requests.post(url, headers=headers, json=payload)
 print(response.json())`;
+    }
+
+    // 5. Python (Official SDK)
+    if (providerId === 'anthropic') {
+      return `import anthropic
+
+client = anthropic.Anthropic(api_key="${apiKey}")
+message = client.messages.create(
+    model="${targetModel}",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello Claude"}]
+)
+print(message.content)`;
+    }
+
+    if (providerId === 'gemini') {
+      return `import google.generativeai as genai
+
+genai.configure(api_key="${apiKey}")
+model = genai.GenerativeModel('${targetModel}')
+response = model.generate_content("Hello Gemini")
+print(response.text)`;
+    }
+
+    return `from openai import OpenAI
+
+client = OpenAI(api_key="${apiKey}")
+response = client.chat.completions.create(
+    model="${targetModel}",
+    messages=[{"role": "user", "content": "Hello"}]
+)
+print(response.choices[0].message.content)`;
   };
 
   const handleCopyCode = () => {
@@ -153,21 +240,28 @@ print(response.json())`;
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
             <Code2 size={14} className="text-amber-400" />
-            <span>Code Snippet Generator</span>
+            <span>SDK Code Generator</span>
           </div>
 
           <div className="flex items-center gap-1 bg-slate-950 p-0.5 rounded border border-slate-800">
-            {(['curl', 'javascript', 'python'] as const).map((lang) => (
+            {(
+              [
+                { id: 'curl', label: 'cURL' },
+                { id: 'js_fetch', label: 'JS' },
+                { id: 'node_sdk', label: 'Node SDK' },
+                { id: 'py_sdk', label: 'Py SDK' }
+              ] as const
+            ).map((lang) => (
               <button
-                key={lang}
-                onClick={() => setSnippetLanguage(lang)}
-                className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded transition-colors ${
-                  snippetLanguage === lang
+                key={lang.id}
+                onClick={() => setSnippetLanguage(lang.id as any)}
+                className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-colors ${
+                  snippetLanguage === lang.id
                     ? 'bg-amber-500 text-slate-950'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                {lang === 'javascript' ? 'JS' : lang}
+                {lang.label}
               </button>
             ))}
           </div>
