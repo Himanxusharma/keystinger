@@ -171,11 +171,11 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
   return (
     <div className="space-y-4">
       {/* Top Health Analytics Summary Bar */}
-      <div className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3.5 shadow-lg space-y-3">
+      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="text-amber-400" size={18} />
-            <h3 className="text-xs font-black uppercase tracking-wider text-white">
+            <ShieldCheck className="text-amber-600" size={18} />
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
               Vault Health Analytics
             </h3>
           </div>
@@ -183,15 +183,15 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
           <div className="flex items-center gap-1.5">
             <button
               onClick={handleExportBackup}
-              className="text-[10px] font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1 rounded-md transition-all flex items-center gap-1"
+              className="text-[10px] font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2 py-1 rounded-lg transition-all flex items-center gap-1 shadow-xs"
               title="Export Encrypted Vault Backup JSON"
             >
-              <Download size={11} className="text-amber-400" />
+              <Download size={11} className="text-amber-600" />
               <span>Export</span>
             </button>
 
-            <label className="text-[10px] font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1 rounded-md cursor-pointer transition-all flex items-center gap-1">
-              <Upload size={11} className="text-amber-400" />
+            <label className="text-[10px] font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2 py-1 rounded-lg cursor-pointer transition-all flex items-center gap-1 shadow-xs">
+              <Upload size={11} className="text-amber-600" />
               <span>Import</span>
               <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
             </label>
@@ -200,30 +200,30 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
 
         {/* Health Counters Grid */}
         <div className="grid grid-cols-4 gap-2 text-center">
-          <div className="bg-slate-950/80 border border-slate-800/80 rounded-xl p-2">
-            <span className="text-[10px] text-slate-400 font-sans block uppercase font-bold">Total</span>
-            <span className="text-sm font-black text-white">{totalKeys}</span>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-2">
+            <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">Total</span>
+            <span className="text-sm font-black text-slate-900">{totalKeys}</span>
           </div>
 
-          <div className="bg-emerald-950/30 border border-emerald-500/20 rounded-xl p-2">
-            <span className="text-[10px] text-emerald-400 font-sans block uppercase font-bold flex items-center justify-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Valid
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2">
+            <span className="text-[10px] text-emerald-700 font-sans block uppercase font-bold flex items-center justify-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Valid
             </span>
-            <span className="text-sm font-black text-emerald-300">{validCount}</span>
+            <span className="text-sm font-black text-emerald-800">{validCount}</span>
           </div>
 
-          <div className="bg-amber-950/30 border border-amber-500/20 rounded-xl p-2">
-            <span className="text-[10px] text-amber-400 font-sans block uppercase font-bold flex items-center justify-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Limited
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-2">
+            <span className="text-[10px] text-amber-800 font-sans block uppercase font-bold flex items-center justify-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Limited
             </span>
-            <span className="text-sm font-black text-amber-300">{limitedCount}</span>
+            <span className="text-sm font-black text-amber-900">{limitedCount}</span>
           </div>
 
-          <div className="bg-rose-950/30 border border-rose-500/20 rounded-xl p-2">
-            <span className="text-[10px] text-rose-400 font-sans block uppercase font-bold flex items-center justify-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Invalid
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-2">
+            <span className="text-[10px] text-rose-700 font-sans block uppercase font-bold flex items-center justify-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Invalid
             </span>
-            <span className="text-sm font-black text-rose-300">{invalidCount}</span>
+            <span className="text-sm font-black text-rose-800">{invalidCount}</span>
           </div>
         </div>
 
@@ -231,7 +231,7 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
         <button
           onClick={handleBulkRecheckAll}
           disabled={savedKeys.length === 0 || isBulkAuditing}
-          className="w-full bg-slate-800 hover:bg-slate-700 border border-amber-500/30 text-amber-300 font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
         >
           <RefreshCw size={13} className={`text-amber-400 ${isBulkAuditing ? 'animate-spin' : ''}`} />
           <span>{isBulkAuditing ? bulkAuditProgress : 'Re-Check All Keys Live'}</span>
@@ -239,7 +239,7 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
       </div>
 
       {importMessage && (
-        <div className="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-300 font-medium">
+        <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium">
           {importMessage}
         </div>
       )}
@@ -252,15 +252,15 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search vault keys..."
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"
+            className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-colors shadow-xs"
           />
-          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white font-medium focus:outline-none focus:border-amber-500"
+          className="bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-900 font-semibold focus:outline-none focus:border-amber-500 shadow-xs"
         >
           <option value="all">All Status</option>
           <option value="valid">Valid Only</option>
@@ -271,9 +271,9 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
 
       {/* Saved Keys Grid List */}
       {filteredKeys.length === 0 ? (
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 text-center space-y-2">
-          <ShieldCheck size={28} className="mx-auto text-slate-600" />
-          <p className="text-xs text-slate-400 font-medium">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-2 shadow-xs">
+          <ShieldCheck size={28} className="mx-auto text-slate-300" />
+          <p className="text-xs text-slate-500 font-medium">
             {savedKeys.length === 0
               ? 'No saved API keys in vault yet. Validate and save a key to get started!'
               : 'No keys match the selected search or status filter.'}
@@ -292,30 +292,30 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
             return (
               <div
                 key={k.id}
-                className="bg-slate-900/90 hover:bg-slate-900 border border-slate-800/90 hover:border-slate-700/80 rounded-2xl p-3.5 space-y-3 transition-all duration-150 shadow-md group"
+                className="bg-white hover:bg-slate-50/80 border border-slate-200 rounded-2xl p-3.5 space-y-3 transition-all duration-150 shadow-sm group"
               >
                 {/* Header Row */}
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-bold text-white leading-none">
+                      <h4 className="text-xs font-bold text-slate-900 leading-none">
                         {k.nickname}
                       </h4>
-                      <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-950 border border-slate-800 text-amber-300">
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800">
                         {providerName}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 pt-0.5">
-                      <code className="text-[11px] font-mono text-slate-300 bg-slate-950 border border-slate-800/90 px-2 py-0.5 rounded-md">
+                      <code className="text-[11px] font-mono text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
                         {k.maskedKey}
                       </code>
 
                       <span
-                        className={`text-[9px] font-sans font-semibold px-2 py-0.5 rounded-md border ${
+                        className={`text-[9px] font-sans font-bold px-2 py-0.5 rounded-md border ${
                           isOld
-                            ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                            : 'bg-slate-950 text-slate-400 border-slate-800'
+                            ? 'bg-amber-50 text-amber-800 border-amber-200'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}
                       >
                         {isOld ? `🔐 Rotation Due (${ageDays}d)` : `${ageDays}d old`}
@@ -324,54 +324,54 @@ export const SavedVault: React.FC<SavedVaultProps> = ({
                   </div>
 
                   {/* Status Indicator Pill */}
-                  <div className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase flex items-center gap-1.5 border shadow-sm ${
+                  <div className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase flex items-center gap-1.5 border shadow-xs ${
                     k.status === 'valid' || !k.status
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       : k.status === 'ratelimited'
-                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                      : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                      ? 'bg-amber-50 text-amber-800 border-amber-200'
+                      : 'bg-rose-50 text-rose-700 border-rose-200'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       k.status === 'valid' || !k.status
-                        ? 'bg-emerald-400 animate-pulse'
+                        ? 'bg-emerald-500 animate-pulse'
                         : k.status === 'ratelimited'
-                        ? 'bg-amber-400'
-                        : 'bg-rose-400'
+                        ? 'bg-amber-500'
+                        : 'bg-rose-500'
                     }`}></span>
                     <span>{k.status || 'valid'}</span>
                   </div>
                 </div>
 
                 {/* Footer Action Toolbar */}
-                <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <Layers size={12} className="text-amber-400" />
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+                    <Layers size={12} className="text-amber-600" />
                     <span>{k.modelsCount || 0} Models Entitled</span>
                   </div>
 
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleCopyDecryptedKey(k)}
-                      className="p-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 rounded-lg transition-all active:scale-95 flex items-center gap-1"
+                      className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-300 rounded-lg transition-all active:scale-95 flex items-center gap-1 shadow-xs"
                       title="Decrypt and Copy API Key"
                     >
-                      {isCopied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                      <span className="text-[10px] font-semibold">{isCopied ? 'Copied' : 'Copy'}</span>
+                      {isCopied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
+                      <span className="text-[10px] font-bold">{isCopied ? 'Copied' : 'Copy'}</span>
                     </button>
 
                     <button
                       onClick={() => handleAuditKey(k)}
                       disabled={isAuditing}
-                      className="p-1.5 bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-amber-300 border border-slate-800 rounded-lg transition-all active:scale-95 flex items-center gap-1 disabled:opacity-50"
+                      className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-300 rounded-lg transition-all active:scale-95 flex items-center gap-1 disabled:opacity-50 shadow-xs"
                       title="Re-Check Live Health"
                     >
-                      <RefreshCw size={13} className={`text-amber-400 ${isAuditing ? 'animate-spin' : ''}`} />
-                      <span className="text-[10px] font-semibold">Check</span>
+                      <RefreshCw size={13} className={`text-amber-600 ${isAuditing ? 'animate-spin' : ''}`} />
+                      <span className="text-[10px] font-bold">Check</span>
                     </button>
 
                     <button
                       onClick={() => handleDelete(k.id)}
-                      className="p-1.5 bg-slate-950 hover:bg-rose-950/60 text-slate-400 hover:text-rose-300 border border-slate-800 hover:border-rose-500/30 rounded-lg transition-all active:scale-95"
+                      className="p-1.5 bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-700 border border-slate-300 hover:border-rose-200 rounded-lg transition-all active:scale-95 shadow-xs"
                       title="Delete Key from Vault"
                     >
                       <Trash2 size={13} />

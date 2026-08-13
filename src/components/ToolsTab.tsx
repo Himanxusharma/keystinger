@@ -18,13 +18,13 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ customProviders, onKeysChang
   return (
     <div className="space-y-3.5">
       {/* Sub Tab Navigation */}
-      <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+      <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
         <button
           onClick={() => setActiveSubTab('tokens')}
           className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] font-semibold transition-all ${
             activeSubTab === 'tokens'
-              ? 'bg-amber-500 text-slate-950 font-bold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Calculator size={12} />
@@ -35,8 +35,8 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ customProviders, onKeysChang
           onClick={() => setActiveSubTab('compare')}
           className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] font-semibold transition-all ${
             activeSubTab === 'compare'
-              ? 'bg-amber-500 text-slate-950 font-bold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <Columns size={12} />
@@ -47,8 +47,8 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ customProviders, onKeysChang
           onClick={() => setActiveSubTab('batch')}
           className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] font-semibold transition-all ${
             activeSubTab === 'batch'
-              ? 'bg-amber-500 text-slate-950 font-bold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <FileText size={12} />
@@ -59,8 +59,8 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ customProviders, onKeysChang
           onClick={() => setActiveSubTab('env')}
           className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] font-semibold transition-all ${
             activeSubTab === 'env'
-              ? 'bg-amber-500 text-slate-950 font-bold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <FileCode size={12} />
@@ -71,8 +71,8 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ customProviders, onKeysChang
           onClick={() => setActiveSubTab('balancer')}
           className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg text-[10px] font-semibold transition-all ${
             activeSubTab === 'balancer'
-              ? 'bg-amber-500 text-slate-950 font-bold'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           <RefreshCw size={12} />

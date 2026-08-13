@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RefreshCw, Copy, Check, Code2 } from 'lucide-react';
+import { RefreshCw, Copy, Check } from 'lucide-react';
 import { BUILTIN_PROVIDERS } from '../adapters/registry';
 
 export const LoadBalancerGenerator: React.FC = () => {
@@ -76,22 +76,22 @@ def fetch_with_fallback(url, payload):
   };
 
   return (
-    <div className="space-y-3.5">
+    <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-3.5 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <RefreshCw className="text-amber-400" size={18} />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+          <RefreshCw className="text-amber-600" size={18} />
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
             Multi-Key Load Balancer Generator
           </h3>
         </div>
 
-        <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded border border-slate-800">
+        <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
           {(['node', 'python'] as const).map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
               className={`text-[10px] font-bold px-2 py-0.5 rounded transition-colors uppercase ${
-                lang === l ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                lang === l ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {l}
@@ -101,11 +101,11 @@ def fetch_with_fallback(url, payload):
       </div>
 
       <div>
-        <label className="text-[11px] font-semibold text-slate-400 block mb-1">Target Provider</label>
+        <label className="text-[11px] font-bold text-slate-700 block mb-1">Target Provider</label>
         <select
           value={providerId}
           onChange={(e) => setProviderId(e.target.value)}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white"
+          className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-semibold text-slate-900"
         >
           {BUILTIN_PROVIDERS.map((p) => (
             <option key={p.id} value={p.id}>
@@ -116,7 +116,7 @@ def fetch_with_fallback(url, payload):
       </div>
 
       <div className="relative">
-        <pre className="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[11px] font-mono text-slate-300 overflow-x-auto max-h-48 custom-scrollbar">
+        <pre className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-48 custom-scrollbar shadow-inner">
           <code>{generateLoadBalancerCode()}</code>
         </pre>
         <button

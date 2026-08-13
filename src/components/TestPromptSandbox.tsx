@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Loader2, CheckCircle2, AlertTriangle, Zap, Terminal } from 'lucide-react';
+import { Play, Loader2, CheckCircle2, AlertTriangle, Terminal } from 'lucide-react';
 import { logExchange } from '../utils/storage';
 import { CapturedExchange } from '../types';
 
@@ -134,13 +134,13 @@ export const TestPromptSandbox: React.FC<TestPromptSandboxProps> = ({ providerId
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-3 shadow-md">
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3 shadow-xs">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-          <Terminal size={15} className="text-amber-400" />
+        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
+          <Terminal size={15} className="text-amber-600" />
           <span>Test Inference Sandbox</span>
         </div>
-        <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-mono border border-emerald-500/20">
+        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full font-mono border border-emerald-200">
           Inference Quota Test
         </span>
       </div>
@@ -151,13 +151,13 @@ export const TestPromptSandbox: React.FC<TestPromptSandboxProps> = ({ providerId
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Test prompt string..."
-          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+          className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 shadow-inner"
         />
 
         <button
           onClick={handleExecuteTest}
           disabled={isLoading || !prompt.trim()}
-          className="w-full bg-slate-800 hover:bg-slate-700 border border-amber-500/30 text-amber-300 font-bold py-1.5 px-3 rounded-lg text-xs transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+          className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-1.5 px-3 rounded-lg text-xs transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm"
         >
           {isLoading ? (
             <>
@@ -174,22 +174,22 @@ export const TestPromptSandbox: React.FC<TestPromptSandboxProps> = ({ providerId
       </div>
 
       {responseOutput && (
-        <div className="p-2.5 bg-emerald-950/30 border border-emerald-500/30 rounded-lg space-y-1 font-mono text-xs">
-          <div className="flex items-center justify-between text-emerald-400 font-bold text-[10px]">
+        <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg space-y-1 font-mono text-xs">
+          <div className="flex items-center justify-between text-emerald-800 font-bold text-[10px]">
             <span className="flex items-center gap-1">
               <CheckCircle2 size={12} /> Live Response Output
             </span>
             <span>{latencyMs}ms</span>
           </div>
-          <p className="text-[11px] text-emerald-200 bg-slate-950 p-2 rounded border border-slate-800 whitespace-pre-wrap">
+          <p className="text-[11px] text-slate-800 bg-white p-2 rounded-md border border-slate-200 whitespace-pre-wrap shadow-inner">
             {responseOutput}
           </p>
         </div>
       )}
 
       {errorMsg && (
-        <div className="p-2.5 bg-rose-950/40 border border-rose-500/30 rounded-lg text-xs text-rose-300 flex items-center gap-2">
-          <AlertTriangle size={14} className="text-rose-400 shrink-0" />
+        <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 font-semibold flex items-center gap-2">
+          <AlertTriangle size={14} className="text-rose-600 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}

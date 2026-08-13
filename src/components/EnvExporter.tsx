@@ -90,22 +90,22 @@ export const EnvExporter: React.FC<EnvExporterProps> = ({ customProviders }) => 
   };
 
   return (
-    <div className="space-y-3.5">
+    <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-3.5 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FileCode className="text-amber-400" size={18} />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+          <FileCode className="text-amber-600" size={18} />
+          <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
             Environment Variable Exporter
           </h3>
         </div>
-        <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-          <Lock size={10} className="text-emerald-400" /> In-Memory Decryption
+        <span className="text-[10px] text-slate-600 font-mono flex items-center gap-1 font-semibold">
+          <Lock size={10} className="text-emerald-600" /> In-Memory Decryption
         </span>
       </div>
 
       <div className="flex items-center justify-between">
-        <label className="text-[11px] font-semibold text-slate-300">Export Format</label>
-        <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800">
+        <label className="text-[11px] font-bold text-slate-700">Export Format</label>
+        <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
           {(
             [
               { id: 'env', label: '.env File' },
@@ -120,7 +120,7 @@ export const EnvExporter: React.FC<EnvExporterProps> = ({ customProviders }) => 
                 setExportedText('');
               }}
               className={`text-[10px] font-bold px-2 py-1 rounded transition-colors ${
-                format === f.id ? 'bg-amber-500 text-slate-950' : 'text-slate-400 hover:text-white'
+                format === f.id ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {f.label}
@@ -132,7 +132,7 @@ export const EnvExporter: React.FC<EnvExporterProps> = ({ customProviders }) => 
       <button
         onClick={handleGenerate}
         disabled={isGenerating}
-        className="w-full bg-slate-900 hover:bg-slate-800 border border-amber-500/30 text-amber-300 font-bold py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5"
+        className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm"
       >
         <FileCode size={14} className="text-amber-400" />
         <span>Generate {format.toUpperCase()} Credentials Export</span>
@@ -140,13 +140,13 @@ export const EnvExporter: React.FC<EnvExporterProps> = ({ customProviders }) => 
 
       {exportedText && (
         <div className="relative space-y-2">
-          <div className="flex items-center justify-between text-[10px] text-slate-400">
-            <span className="flex items-center gap-1 text-amber-400">
+          <div className="flex items-center justify-between text-[10px] text-slate-500">
+            <span className="flex items-center gap-1 text-amber-700 font-bold">
               <ShieldAlert size={11} /> Decrypted in memory for export only
             </span>
           </div>
 
-          <pre className="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-48 custom-scrollbar">
+          <pre className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-48 custom-scrollbar shadow-inner">
             <code>{exportedText}</code>
           </pre>
 

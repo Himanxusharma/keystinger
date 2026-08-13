@@ -1,66 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Copy, Check, Eye, EyeOff, Trash2, ChevronDown, ChevronRight, ShieldAlert } from 'lucide-react';
+import { Terminal, Trash2, Copy, Check, Lock, ChevronDown, ChevronRight, ShieldAlert } from 'lucide-react';
 import { CapturedExchange } from '../types';
 import { getCapturedExchanges, clearExchanges } from '../utils/storage';
-import { exportToCurl } from '../utils/curlParser';
-import { maskApiKey } from '../utils/crypto';
 
 export const ExchangeInspector: React.FC = () => {
   const [exchanges, setExchanges] = useState<CapturedExchange[]>([]);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [showMaskedKeys, setShowMaskedKeys] = useState<Record<string, boolean>>({});
-  const [copiedType, setCopiedType] = useState<string | null>(null);
+  const [selectedExchangeId, setSelectedExchangeId] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [activeSubTab, setActiveSubTab] = useState<'request' | 'response' | 'curl'>('response');
 
-  const loadLogs = async () => {
-    const logs = await getCapturedExchanges();
-    setExchanges(logs);
-    if (logs.length > 0 && !expandedId) {
-      setExpandedId(logs[0].id);
+  const loadExchanges = async () => {
+    const data = await getCapturedExchanges();
+    setExchanges(data);
+    if (data.length > 0 && !selectedExchangeId) {
+      setSelectedExchangeId(data[0].id);
     }
   };
 
   useEffect(() => {
-    loadLogs();
+    loadExchanges();
   }, []);
 
   const handleClear = async () => {
     await clearExchanges();
     setExchanges([]);
-    setExpandedId(null);
+    setSelectedExchangeId(null);
   };
 
-  const toggleMask = (id: string) => {
-    setShowMaskedKeys((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  const activeExchange = exchanges.find((e) => e.id === selectedExchangeId) || exchanges[0];
 
-  const handleCopyCurl = (ex: CapturedExchange) => {
-    const curl = exportToCurl(ex.request.method, ex.request.url, ex.request.headers, ex.request.body);
-    navigator.clipboard.writeText(curl);
-    setCopiedType(`curl_${ex.id}`);
-    setTimeout(() => setCopiedType(null), 2000);
-  };
-
-  const formatHeaders = (headers: Record<string, string>, shouldUnmask: boolean): Record<string, string> => {
-    const formatted: Record<string, string> = {};
-    Object.entries(headers).forEach(([k, v]) => {
-      if (/authorization/i.test(k) || /x-api-key/i.test(k) || /x-goog-api-key/i.test(k)) {
-        if (shouldUnmask) {
-          formatted[k] = v;
-        } else {
-          if (v.startsWith('Bearer ')) {
-            formatted[k] = `Bearer ${maskApiKey(v.replace('Bearer ', ''))}`;
-          } else {
-            formatted[k] = maskApiKey(v);
-          }
-        }
-      } else {
-        formatted[k] = v;
-      }
-    });
-    return formatted;
-  };
-
-  const prettyJson = (str: string): string => {
+  const formatJson = (str: string): string => {
     try {
       return JSON.stringify(JSON.parse(str), null, 2);
     } catch {
@@ -68,134 +37,166 @@ export const ExchangeInspector: React.FC = () => {
     }
   };
 
+  const generateCurlFromExchange = (ex: CapturedExchange): string => {
+    const headersList = Object.entries(ex.request.headers)
+      .map(([k, v]) => `-H "${k}: ${v}"`)
+      .join(' \\\n  ');
+    const bodyArg = ex.request.body ? ` \\\n  -d '${ex.request.body}'` : '';
+    return `curl -X ${ex.request.method} "${ex.request.url}" \\\n  ${headersList}${bodyArg}`;
+  };
+
+  const handleCopySnippet = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
   return (
-    <div className="space-y-3.5">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      {/* Top Bar */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
-          <Terminal className="text-amber-400" size={18} />
-          <h2 className="text-xs font-bold uppercase tracking-wider text-white">
-            Traffic Inspector ({exchanges.length})
-          </h2>
+          <Terminal size={18} className="text-amber-600" />
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 leading-none">
+              Traffic Exchange Log ({exchanges.length})
+            </h3>
+            <p className="text-[10px] text-slate-500 font-medium mt-0.5 flex items-center gap-1">
+              <Lock size={9} className="text-emerald-600" /> Credential Headers Masked in Memory
+            </p>
+          </div>
         </div>
-        {exchanges.length > 0 && (
-          <button
-            onClick={handleClear}
-            className="text-[11px] font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded transition-colors"
-          >
-            <Trash2 size={11} /> Clear Logs
-          </button>
-        )}
+
+        <button
+          onClick={handleClear}
+          disabled={exchanges.length === 0}
+          className="bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 border border-slate-300 hover:border-rose-200 px-2.5 py-1 rounded-lg text-xs font-bold transition-all disabled:opacity-40 flex items-center gap-1 shadow-xs"
+        >
+          <Trash2 size={12} />
+          <span>Clear Log</span>
+        </button>
       </div>
 
       {exchanges.length === 0 ? (
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6 text-center space-y-2">
-          <Terminal size={24} className="mx-auto text-slate-600" />
-          <p className="text-xs font-medium text-slate-400">No captured network exchanges yet.</p>
-          <p className="text-[11px] text-slate-500">
-            Make a validation or custom request to inspect the exact raw headers & payloads sent from your browser.
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-2 shadow-xs">
+          <Terminal size={28} className="mx-auto text-slate-300" />
+          <p className="text-xs text-slate-500 font-medium">
+            No HTTP traffic captured yet. Perform a validation call to inspect raw exchanges.
           </p>
         </div>
       ) : (
-        <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
-          {exchanges.map((ex) => {
-            const isExpanded = expandedId === ex.id;
-            const isUnmasked = Boolean(showMaskedKeys[ex.id]);
+        <div className="grid grid-cols-1 gap-3">
+          {/* Exchange Selector Dropdown */}
+          <div>
+            <label className="text-[11px] font-bold text-slate-700 block mb-1">Select Exchange Request</label>
+            <select
+              value={selectedExchangeId || ''}
+              onChange={(e) => setSelectedExchangeId(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 shadow-xs focus:outline-none focus:border-amber-500"
+            >
+              {exchanges.map((e) => (
+                <option key={e.id} value={e.id}>
+                  [{new Date(e.timestamp).toLocaleTimeString()}] {e.request.method} {e.providerId} ({e.response.status})
+                </option>
+              ))}
+            </select>
+          </div>
 
-            return (
-              <div
-                key={ex.id}
-                className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm transition-all"
-              >
-                {/* Header Row */}
+          {activeExchange && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-3 shadow-sm">
+              {/* Status Header */}
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold bg-slate-100 text-slate-900 px-2 py-0.5 rounded border border-slate-200">
+                    {activeExchange.request.method}
+                  </span>
+                  <span className={`font-bold px-2 py-0.5 rounded border ${
+                    activeExchange.response.status < 300
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-rose-50 text-rose-700 border-rose-200'
+                  }`}>
+                    {activeExchange.response.status} {activeExchange.response.statusText}
+                  </span>
+                </div>
+
+                <span className="text-[10px] text-slate-500 font-sans font-bold">
+                  {activeExchange.response.durationMs}ms
+                </span>
+              </div>
+
+              {/* Sub tab navigation */}
+              <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
                 <button
-                  onClick={() => setExpandedId(isExpanded ? null : ex.id)}
-                  className="w-full text-left p-3 flex items-center justify-between hover:bg-slate-800/50 transition-colors"
+                  onClick={() => setActiveSubTab('response')}
+                  className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${
+                    activeSubTab === 'response' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
                 >
-                  <div className="flex items-center gap-2 font-mono text-xs truncate">
-                    {isExpanded ? (
-                      <ChevronDown size={14} className="text-amber-400 shrink-0" />
-                    ) : (
-                      <ChevronRight size={14} className="text-slate-500 shrink-0" />
-                    )}
-                    <span className="font-bold text-amber-400 uppercase">{ex.request.method}</span>
-                    <span className="truncate text-slate-300 max-w-[180px]">{ex.request.url}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span
-                      className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded border ${
-                        ex.response.status >= 200 && ex.response.status < 300
-                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                          : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
-                      }`}
-                    >
-                      {ex.response.status || 'ERR'}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-500">{ex.response.durationMs}ms</span>
-                  </div>
+                  Response Body
                 </button>
+                <button
+                  onClick={() => setActiveSubTab('request')}
+                  className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${
+                    activeSubTab === 'request' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Request Headers
+                </button>
+                <button
+                  onClick={() => setActiveSubTab('curl')}
+                  className={`flex-1 py-1 rounded text-[10px] font-bold transition-all ${
+                    activeSubTab === 'curl' ? 'bg-amber-500 text-slate-950 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Export cURL
+                </button>
+              </div>
 
-                {/* Expanded Details */}
-                {isExpanded && (
-                  <div className="p-3 pt-0 border-t border-slate-800/80 space-y-3 bg-slate-950/60">
-                    {/* Security Mask Bar */}
-                    <div className="flex items-center justify-between pt-2">
-                      <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
-                        <ShieldAlert size={11} className="text-amber-400" /> Header credentials masked by default
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleMask(ex.id)}
-                          className="text-[10px] font-semibold text-slate-300 hover:text-white flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
-                        >
-                          {isUnmasked ? <EyeOff size={11} /> : <Eye size={11} />}
-                          <span>{isUnmasked ? 'Mask Key' : 'Reveal Key'}</span>
-                        </button>
-                        <button
-                          onClick={() => handleCopyCurl(ex)}
-                          className="text-[10px] font-semibold text-amber-300 hover:text-amber-200 flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
-                        >
-                          {copiedType === `curl_${ex.id}` ? (
-                            <Check size={11} className="text-emerald-400" />
-                          ) : (
-                            <Copy size={11} />
-                          )}
-                          <span>Copy cURL</span>
-                        </button>
+              {/* Sub tab content */}
+              <div className="relative">
+                {activeSubTab === 'response' && (
+                  <pre className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-56 custom-scrollbar shadow-inner">
+                    <code>{formatJson(activeExchange.response.body)}</code>
+                  </pre>
+                )}
+
+                {activeSubTab === 'request' && (
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-56 custom-scrollbar space-y-1 shadow-inner">
+                    <p className="text-amber-400 font-bold mb-1">// Target URL</p>
+                    <p className="text-slate-300">{activeExchange.request.url}</p>
+                    <p className="text-amber-400 font-bold mt-2 mb-1">// Headers (Credentials Masked)</p>
+                    {Object.entries(activeExchange.request.headers).map(([k, v]) => (
+                      <div key={k} className="text-slate-300">
+                        <span className="text-emerald-400">{k}:</span> {v}
                       </div>
-                    </div>
-
-                    {/* Request Headers & Body */}
-                    <div>
-                      <h5 className="text-[11px] font-bold text-slate-300 uppercase mb-1">Request Headers</h5>
-                      <pre className="bg-slate-900 border border-slate-800 rounded-md p-2 text-[10px] font-mono text-slate-300 overflow-x-auto">
-                        <code>{JSON.stringify(formatHeaders(ex.request.headers, isUnmasked), null, 2)}</code>
-                      </pre>
-                    </div>
-
-                    {ex.request.body && (
-                      <div>
-                        <h5 className="text-[11px] font-bold text-slate-300 uppercase mb-1">Request Payload</h5>
-                        <pre className="bg-slate-900 border border-slate-800 rounded-md p-2 text-[10px] font-mono text-amber-300 overflow-x-auto max-h-24">
-                          <code>{prettyJson(ex.request.body)}</code>
-                        </pre>
-                      </div>
-                    )}
-
-                    {/* Response Status & Body */}
-                    <div>
-                      <h5 className="text-[11px] font-bold text-slate-300 uppercase mb-1">
-                        Response ({ex.response.status} {ex.response.statusText})
-                      </h5>
-                      <pre className="bg-slate-900 border border-slate-800 rounded-md p-2 text-[10px] font-mono text-emerald-300 overflow-x-auto max-h-40 custom-scrollbar">
-                        <code>{prettyJson(ex.response.body)}</code>
-                      </pre>
-                    </div>
+                    ))}
                   </div>
                 )}
+
+                {activeSubTab === 'curl' && (
+                  <pre className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-56 custom-scrollbar shadow-inner">
+                    <code>{generateCurlFromExchange(activeExchange)}</code>
+                  </pre>
+                )}
+
+                <button
+                  onClick={() =>
+                    handleCopySnippet(
+                      activeSubTab === 'response'
+                        ? activeExchange.response.body
+                        : activeSubTab === 'request'
+                        ? JSON.stringify(activeExchange.request.headers, null, 2)
+                        : generateCurlFromExchange(activeExchange)
+                    )
+                  }
+                  className="absolute top-2 right-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 p-1.5 rounded-md text-xs transition-all active:scale-95 flex items-center gap-1"
+                  title="Copy snippet"
+                >
+                  {isCopied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                </button>
               </div>
-            );
-          })}
+            </div>
+          )}
         </div>
       )}
     </div>

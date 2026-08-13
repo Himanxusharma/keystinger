@@ -216,21 +216,21 @@ print(response.choices[0].message.content)`;
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 space-y-3.5 shadow-md">
+    <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-3.5 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Layers size={16} className="text-amber-400" />
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+          <Layers size={16} className="text-amber-600" />
+          <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
             Accessible Live Models ({models.length})
           </h3>
         </div>
         <div className="flex items-center gap-1.5">
           {newModelsCount > 0 && (
-            <span className="text-[10px] text-amber-300 font-bold bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/40 flex items-center gap-1">
+            <span className="text-[10px] text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
               ✨ {newModelsCount} new models!
             </span>
           )}
-          <span className="text-[10px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
+          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
             <Sparkles size={10} /> Live Verified
           </span>
         </div>
@@ -243,9 +243,9 @@ print(response.choices[0].message.content)`;
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search models by ID or name..."
-          className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+          className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 shadow-inner"
         />
-        <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+        <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
       </div>
 
       {/* Scrollable Model Picker List */}
@@ -259,10 +259,10 @@ print(response.choices[0].message.content)`;
               <button
                 key={m.id}
                 onClick={() => setSelectedModelId(m.id)}
-                className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all flex items-center justify-between border ${
+                className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-mono transition-all flex items-center justify-between border ${
                   isSelected
-                    ? 'bg-amber-500/10 border-amber-500/40 text-amber-300 font-semibold'
-                    : 'bg-slate-950/40 border-transparent text-slate-300 hover:bg-slate-800/60'
+                    ? 'bg-amber-50 border-amber-300 text-amber-900 font-bold shadow-xs'
+                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 <span className="truncate">{m.id}</span>
@@ -278,14 +278,14 @@ print(response.choices[0].message.content)`;
       </div>
 
       {/* Code Snippet Generator */}
-      <div className="pt-2 border-t border-slate-800">
+      <div className="pt-2 border-t border-slate-200">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
-            <Code2 size={14} className="text-amber-400" />
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+            <Code2 size={14} className="text-amber-600" />
             <span>SDK Code Generator</span>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-950 p-0.5 rounded border border-slate-800">
+          <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             {(
               [
                 { id: 'curl', label: 'cURL' },
@@ -299,8 +299,8 @@ print(response.choices[0].message.content)`;
                 onClick={() => setSnippetLanguage(lang.id as any)}
                 className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-colors ${
                   snippetLanguage === lang.id
-                    ? 'bg-amber-500 text-slate-950'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-amber-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {lang.label}
@@ -310,7 +310,7 @@ print(response.choices[0].message.content)`;
         </div>
 
         <div className="relative">
-          <pre className="bg-slate-950 border border-slate-800 rounded-lg p-3 text-[11px] font-mono text-slate-300 overflow-x-auto max-h-32 custom-scrollbar">
+          <pre className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-[11px] font-mono text-slate-200 overflow-x-auto max-h-32 custom-scrollbar shadow-inner">
             <code>{generateSnippet()}</code>
           </pre>
           <button
