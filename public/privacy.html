@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KeyStinger — Privacy Policy</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 { font-size: 28px; font-weight: 900; color: #0284c7; margin-bottom: 5px; }
+    h2 { font-size: 20px; font-weight: 700; margin-top: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .badge { display: inline-block; background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: 800; padding: 4px 10px; borderRadius: 20px; text-transform: uppercase; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { text-align: left; padding: 12px; border: 1px solid #e2e8f0; font-size: 14px; }
+    th { background-color: #f1f5f9; font-weight: 700; }
+    code { background-color: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+    .footer { margin-top: 50px; font-size: 13px; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>KeyStinger Extension</h1>
+  <div class="badge">100% On-Device Privacy Guarantee</div>
+  <p><strong>Effective Date:</strong> August 13, 2026</p>
+
+  <h2>1. Overview & Privacy Commitment</h2>
+  <p>KeyStinger is an open-source, privacy-first Chrome Extension designed for AI developers to validate API key credentials, discover models, inspect network traffic, and manage credentials securely.</p>
+  <p><strong>Our Promise:</strong> KeyStinger operates 100% on your local device. We do NOT operate intermediate cloud backend proxy servers, we do NOT collect personal data, and we do NOT track user behavior or send telemetry.</p>
+
+  <h2>2. Information Processing & Security</h2>
+  <p><strong>Local AES-256 WebCrypto Encryption:</strong> All saved API keys are encrypted locally using 256-bit WebCrypto AES-GCM algorithms before writing to <code>chrome.storage.local</code>. Plaintext keys are never stored on disk.</p>
+  <p><strong>Direct Browser Fetch:</strong> All validation API calls originate directly from your Chrome browser to official provider API endpoints (e.g., <code>api.openai.com</code>, <code>api.anthropic.com</code>, <code>generativelanguage.googleapis.com</code>). KeyStinger has zero middleman cloud servers.</p>
+
+  <h2>3. Chrome Extension Permissions Justification</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Permission</th>
+        <th>Purpose & Justification</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>storage</code></td>
+        <td>Required to store WebCrypto AES-GCM encrypted API key records locally on disk (<code>chrome.storage.local</code>).</td>
+      </tr>
+      <tr>
+        <td><code>contextMenus</code></td>
+        <td>Allows right-clicking selected API key text on any webpage to validate credentials with KeyStinger.</td>
+      </tr>
+      <tr>
+        <td><code>alarms</code></td>
+        <td>Registers a background timer (<code>chrome.alarms</code>) for periodic health checks on saved credentials.</td>
+      </tr>
+      <tr>
+        <td><code>host_permissions</code></td>
+        <td>Enables direct client-side <code>fetch()</code> HTTP requests from the user's browser to official AI provider API endpoints.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. Zero Analytics Policy</h2>
+  <p>We do not use Google Analytics, tracking cookies, or external telemetry scripts. Your credentials and usage remain completely private on your device.</p>
+
+  <div class="footer">
+    KeyStinger Open Source Project &bull; Distributed under the MIT License
+  </div>
+</body>
+</html>
