@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Code2, Copy, Check, Sparkles, Layers } from 'lucide-react';
 import { ModelInfo } from '../types';
 
@@ -15,6 +15,40 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({ models, providerId, ap
   const [selectedModelId, setSelectedModelId] = useState<string>(models[0]?.id || '');
   const [snippetLanguage, setSnippetLanguage] = useState<SnippetLang>('curl');
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [newModelsCount, setNewModelsCount] = useState<number>(0);
+
+  // Model Changelog Watcher logic
+  useEffect(() => {
+    if (!models || models.length === 0) return;
+
+    const storageKey = `ks_model_snapshot_${providerId}`;
+    let previousModelIds: string[] = [];
+
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        try {
+          previousModelIds = JSON.parse(raw);
+        } catch {
+          previousModelIds = [];
+        }
+      }
+    }
+
+    const currentModelIds = models.map((m) => m.id);
+
+    if (previousModelIds.length > 0) {
+      const newlyAdded = currentModelIds.filter((id) => !previousModelIds.includes(id));
+      setNewModelsCount(newlyAdded.length);
+    } else {
+      setNewModelsCount(0);
+    }
+
+    // Update snapshot
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(storageKey, JSON.stringify(currentModelIds));
+    }
+  }, [models, providerId]);
 
   if (!models || models.length === 0) return null;
 
@@ -189,9 +223,16 @@ print(response.choices[0].message.content)`;
             Accessible Live Models ({models.length})
           </h3>
         </div>
-        <span className="text-[10px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
-          <Sparkles size={10} /> Live Verified
-        </span>
+        <div className="flex items-center gap-1.5">
+          {newModelsCount > 0 && (
+            <span className="text-[10px] text-amber-300 font-bold bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/40 flex items-center gap-1">
+              ✨ {newModelsCount} new models!
+            </span>
+          )}
+          <span className="text-[10px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
+            <Sparkles size={10} /> Live Verified
+          </span>
+        </div>
       </div>
 
       {/* Model Search Input */}

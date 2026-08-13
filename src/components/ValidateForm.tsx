@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, XCircle, AlertTriangle, Loader2, Sparkles, BookmarkPlus, ExternalLink, Zap } from 'lucide-react';
 import { ProviderDefinition, CustomProvider, ValidationResult } from '../types';
 import { BUILTIN_PROVIDERS, autoDetectProviderId, validateKeyForProvider } from '../adapters/registry';
 import { maskApiKey, encryptKey } from '../utils/crypto';
 import { saveKey, logExchange } from '../utils/storage';
+import { parseRateLimitHeaders, RateLimitInfo } from '../utils/rateLimitDecoder';
 
 interface ValidateFormProps {
   customProviders: CustomProvider[];
@@ -24,6 +25,7 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<ValidationResult | null>(null);
+  const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // Auto-detect provider prefix on key typing
@@ -51,6 +53,7 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
       baseUrl: cp.baseUrl,
       keyPrefixes: [],
       docUrl: undefined,
+      statusPageUrl: undefined,
       isCustom: true
     }))
   ];
@@ -62,11 +65,18 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
 
     setIsLoading(true);
     setResult(null);
+    setRateLimitInfo(null);
     setIsSaved(false);
 
     try {
       const res = await validateKeyForProvider(selectedProviderId, apiKey.trim(), customProviders);
       setResult(res);
+
+      if (res.exchange?.response?.headers) {
+        const rl = parseRateLimitHeaders(res.exchange.response.headers);
+        setRateLimitInfo(rl);
+      }
+
       await logExchange(res.exchange);
       onValidationComplete(res, selectedProviderId);
     } catch (err: any) {
@@ -188,7 +198,7 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
 
       {/* Validation Result Banner */}
       {result && (
-        <div className={`p-3.5 rounded-xl border transition-all ${
+        <div className={`p-3.5 rounded-xl border transition-all space-y-2.5 ${
           result.valid
             ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-200'
             : result.statusCode === 429
@@ -224,9 +234,33 @@ export const ValidateForm: React.FC<ValidateFormProps> = ({
             </span>
           </div>
 
+          {/* Rate-Limit Header Badge Callout */}
+          {rateLimitInfo && (
+            <div className="flex items-center gap-1.5 text-[10px] font-mono font-semibold bg-slate-900/80 p-2 rounded-lg border border-slate-800 text-amber-300">
+              <Zap size={12} className="text-amber-400 shrink-0" />
+              <span className="truncate">{rateLimitInfo.message}</span>
+            </div>
+          )}
+
+          {/* Live Status Shortcut for Failures/Outages */}
+          {(!result.valid || result.statusCode >= 500 || result.statusCode === 429) && currentProvider.statusPageUrl && (
+            <div className="pt-1 flex items-center justify-between">
+              <span className="text-[10px] text-slate-400">Suspecting a provider outage?</span>
+              <a
+                href={currentProvider.statusPageUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[10px] font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded"
+              >
+                <span>Check {currentProvider.displayName} Live Status</span>
+                <ExternalLink size={10} />
+              </a>
+            </div>
+          )}
+
           {/* Optional Save to Vault Action */}
           {result.valid && (
-            <div className="mt-3 pt-3 border-t border-emerald-500/20 flex items-center gap-2">
+            <div className="pt-2 border-t border-emerald-500/20 flex items-center gap-2">
               <input
                 type="text"
                 value={nickname}

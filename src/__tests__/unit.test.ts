@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { autoDetectProviderId } from '../adapters/registry';
+import { autoDetectProviderId, BUILTIN_PROVIDERS } from '../adapters/registry';
 import { maskApiKey } from '../utils/crypto';
 import { parseCurlCommand } from '../utils/curlParser';
 import { exportVaultData, importVaultData, getSavedKeys, saveKey, getRequestTemplates, saveRequestTemplate } from '../utils/storage';
 import { estimateTokenCount, calculateEstimatedCost } from '../utils/pricing';
+import { parseRateLimitHeaders } from '../utils/rateLimitDecoder';
 
-describe('KeyStinger Core Utilities (Phase 1, 2 & 3)', () => {
+describe('KeyStinger Core Utilities (Phases 1, 2, 3 & 4)', () => {
   it('correctly auto-detects provider IDs from API key prefixes', () => {
     expect(autoDetectProviderId('sk-proj-1234567890abcdef')).toBe('openai');
     expect(autoDetectProviderId('sk-ant-api03-abcdef')).toBe('anthropic');
@@ -91,5 +92,26 @@ describe('KeyStinger Core Utilities (Phase 1, 2 & 3)', () => {
     expect(cost.inputCost).toBeGreaterThan(0);
     expect(cost.outputCost).toBeGreaterThan(0);
     expect(cost.totalCost).toBe(cost.inputCost + cost.outputCost);
+  });
+
+  it('parses rate-limit headers into plain language messages', () => {
+    const headers = {
+      'x-ratelimit-remaining-requests': '42',
+      'x-ratelimit-remaining-tokens': '150000',
+      'x-ratelimit-reset-requests': '12s'
+    };
+
+    const parsed = parseRateLimitHeaders(headers);
+    expect(parsed).not.toBeNull();
+    expect(parsed?.remainingRequests).toBe(42);
+    expect(parsed?.remainingTokens).toBe(150000);
+    expect(parsed?.message).toContain('42 reqs left');
+  });
+
+  it('includes official public status page URLs for built-in providers', () => {
+    const openai = BUILTIN_PROVIDERS.find(p => p.id === 'openai');
+    const anthropic = BUILTIN_PROVIDERS.find(p => p.id === 'anthropic');
+    expect(openai?.statusPageUrl).toBe('https://status.openai.com');
+    expect(anthropic?.statusPageUrl).toBe('https://status.anthropic.com');
   });
 });
