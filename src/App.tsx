@@ -7,11 +7,12 @@ import { ExchangeInspector } from './components/ExchangeInspector';
 import { CustomRequestSender } from './components/CustomRequestSender';
 import { ToolsTab } from './components/ToolsTab';
 import { CustomProviderModal } from './components/CustomProviderModal';
-import { ValidationResult, CustomProvider } from './types';
+import { ValidationResult, CustomProvider, SavedKey } from './types';
 import { getSavedKeys, getCustomProviders } from './utils/storage';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('validate');
+  const [savedKeys, setSavedKeys] = useState<SavedKey[]>([]);
   const [savedKeysCount, setSavedKeysCount] = useState<number>(0);
   const [customProviders, setCustomProviders] = useState<CustomProvider[]>([]);
 
@@ -22,6 +23,7 @@ export function App() {
 
   const loadInitialData = async () => {
     const keys = await getSavedKeys();
+    setSavedKeys(keys);
     setSavedKeysCount(keys.length);
     const customProvs = await getCustomProviders();
     setCustomProviders(customProvs);
@@ -45,26 +47,27 @@ export function App() {
         openCustomProviderModal={() => setIsCustomModalOpen(true)}
       />
 
-      <main className="flex-1 p-4 space-y-4 max-w-[400px] mx-auto w-full">
+      <main className="flex-1 p-4 max-w-md mx-auto w-full space-y-4">
         {activeTab === 'validate' && (
-          <>
+          <div className="space-y-4">
             <ValidateForm
               customProviders={customProviders}
               onValidationComplete={handleValidationComplete}
               onKeySaved={loadInitialData}
             />
 
-            {lastValidationResult && lastValidationResult.valid && (
+            {lastValidationResult?.valid && (
               <ModelPicker
                 models={lastValidationResult.models}
                 providerId={lastValidatedProviderId}
               />
             )}
-          </>
+          </div>
         )}
 
         {activeTab === 'vault' && (
           <SavedVault
+            savedKeys={savedKeys}
             customProviders={customProviders}
             onKeysChanged={loadInitialData}
           />
